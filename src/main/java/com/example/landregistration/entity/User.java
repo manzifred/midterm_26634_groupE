@@ -25,6 +25,14 @@ public class User {
     @JsonIgnoreProperties("users") // Stops loop back to users
     private Village village;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("user") // Prevents circular reference
+    private Profile profile;
+
+    @ManyToMany(mappedBy = "owners", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("owners") // Prevents circular reference
+    private java.util.List<Property> properties;
+
     public User() {}
 
     public User(String name, String email, Village village) {
@@ -46,6 +54,12 @@ public class User {
 
     public Village getVillage() { return village; }
     public void setVillage(Village village) { this.village = village; }
+
+    public Profile getProfile() { return profile; }
+    public void setProfile(Profile profile) { this.profile = profile; }
+
+    public java.util.List<Property> getProperties() { return properties; }
+    public void setProperties(java.util.List<Property> properties) { this.properties = properties; }
     
     // Convenience methods to access hierarchy through village
     public Cell getCell() { return village != null ? village.getCell() : null; }
