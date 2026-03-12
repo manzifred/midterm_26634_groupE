@@ -53,9 +53,9 @@ This project is a comprehensive **Land Registration and Management System** buil
 
 <div align="center">
 
-![ERD Diagram](docs/erd-diagram.png)
+![ERD Diagram](https://raw.githubusercontent.com/manzifred/midterm_26634_groupE/main/docs/erd-diagram.png)
 
-*Complete Entity Relationship Diagram showing all 10 entities and their relationships*
+*Complete Entity Relationship Diagram showing all entities and their relationships*
 
 </div>
 
@@ -627,60 +627,7 @@ curl "http://localhost:8080/api/users/exists/nonexistent@example.com"
 
 ---
 
-## 📚 Additional Documentation
-
-- **[IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md)** - Detailed implementation explanations
-- **[SUBMISSION_CHECKLIST.md](SUBMISSION_CHECKLIST.md)** - Quick verification checklist
-- **[VIVA_VOCE_GUIDE.md](VIVA_VOCE_GUIDE.md)** - Theory questions and answers
-- **[PROJECT_VERIFICATION_REPORT.md](PROJECT_VERIFICATION_REPORT.md)** - Complete verification report
-
----
-
-## 🏆 Project Achievements
-
-- ✅ **Zero Compilation Errors** - Clean, production-ready code
-- ✅ **10 Database Entities** - Exceeds 5-table requirement
-- ✅ **4 Relationship Types** - Complete JPA relationship coverage
-- ✅ **RESTful API Design** - Industry-standard endpoints
-- ✅ **Proper Normalization** - Third Normal Form (3NF)
-- ✅ **Performance Optimized** - Pagination and efficient queries
-- ✅ **Comprehensive Documentation** - Professional-grade README
-- ✅ **Best Practices** - Clean code, proper naming, error handling
-
----
-
-## 👨‍💻 Author
-
-**Fred Manzi**  
-Student ID: 26634  
-Group: E
-
-### Contact & Links
-
-- 📧 Email: [fred.manzi@example.com](mailto:fred.manzi@example.com)
-- 🔗 GitHub: [@manzifred](https://github.com/manzifred)
-- 📦 Repository: [midterm_26634_groupE](https://github.com/manzifred/midterm_26634_groupE)
-
----
-
-## 📝 License
-
-This project is submitted as part of academic coursework. All rights reserved.
-
----
-
-## 🙏 Acknowledgments
-
-- **Spring Boot Team** - For the excellent framework
-- **PostgreSQL Community** - For the robust database system
-- **Course Instructor** - For guidance and requirements
-- **Rwanda Administrative Structure** - For the location hierarchy reference
-
----
-
 <div align="center">
-
-### ⭐ If you found this project helpful, please give it a star!
 
 **Built with ❤️ using Spring Boot**
 
