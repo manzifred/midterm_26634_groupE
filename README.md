@@ -1,246 +1,346 @@
-<div align="center">
+# Land Registration & Management System
 
-# 🏛️ Land Registration & Management System
+A comprehensive Spring Boot application implementing Rwanda's administrative hierarchy for land registration and user management.
 
-### A Professional Spring Boot Application for Rwanda's Administrative Hierarchy
-
-[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12%2B-blue.svg)](https://www.postgresql.org/)
-[![License](https://img.shields.io/badge/License-Academic-yellow.svg)](LICENSE)
-
-**Midterm Project - Group E**  
-**Student ID**: 26634  
+**Student ID**: 26634 | **Group**: E  
 **Repository**: [github.com/manzifred/midterm_26634_groupE](https://github.com/manzifred/midterm_26634_groupE)
 
 ---
 
-</div>
+## Overview
 
-## 📋 Table of Contents
-
-- [Overview](#-overview)
-- [Entity Relationship Diagram](#-entity-relationship-diagram)
-- [Key Features](#-key-features)
-- [Technology Stack](#-technology-stack)
-- [Database Architecture](#-database-architecture)
-- [Project Structure](#-project-structure)
-- [Installation & Setup](#-installation--setup)
-- [API Documentation](#-api-documentation)
-- [Testing Guide](#-testing-guide)
-- [Viva-Voce Preparation](#-viva-voce-preparation)
-- [Author](#-author)
+This system manages Rwanda's five-level administrative structure (Province → District → Sector → Cell → Village) with user registration and property management capabilities. Built using Spring Boot 3.2.0, PostgreSQL, and JPA/Hibernate, it demonstrates proper database design, RESTful API development, and efficient data management.
 
 ---
 
-## 🎯 Overview
+## Entity Relationship Diagram
 
-This project is a comprehensive **Land Registration and Management System** built with Spring Boot, demonstrating advanced database design principles and RESTful API development. The system manages Rwanda's five-level administrative hierarchy (Province → District → Sector → Cell → Village) and implements user registration with proper location tracking.
+![ERD Diagram](https://raw.githubusercontent.com/manzifred/midterm_26634_groupE/main/docs/erd-diagram.png)
 
-### 🌟 What Makes This Project Special
+### Database Structure
 
-- **10 Database Entities** with complex relationships (exceeds 5-table requirement)
-- **4 Relationship Types**: One-to-One, One-to-Many, Many-to-One, Many-to-Many
-- **Zero Compilation Errors**: Production-ready code
-- **RESTful API Design**: Following industry best practices
-- **Proper Data Normalization**: Third Normal Form (3NF) compliance
-- **Performance Optimized**: Pagination, sorting, and efficient queries
+The system consists of **9 entities** organized into three categories:
 
----
-
-## 📊 Entity Relationship Diagram
-
-<div align="center">
-
-### Land Registration & Management System - Complete ERD
-
-```
-              ┌─────────────┐
-              │  PROVINCE   │
-              │ ─────────── │
-              │ id (PK)     │
-              │ name        │
-              │ code        │
-              └──────┬──────┘
-                     │ (1:M)
-                     │
-              ┌──────▼──────┐
-              │  DISTRICT   │
-              │ ─────────── │
-              │ id (PK)     │
-              │ name        │
-              │ code        │
-              │ province_id (FK)
-              └──────┬──────┘
-                     │ (1:M)
-                     │
-              ┌──────▼──────┐
-              │   SECTOR    │
-              │ ─────────── │
-              │ id (PK)     │
-              │ name        │
-              │ code        │
-              │ district_id (FK)
-              └──────┬──────┘
-                     │ (1:M)
-                     │
-              ┌──────▼──────┐
-              │   CELL      │
-              │ ─────────── │
-              │ id (PK)     │
-              │ name        │
-              │ code        │
-              │ sector_id (FK)
-              └──────┬──────┘
-                     │ (1:M)
-                     │
-              ┌──────▼──────┐       ┌──────────────┐
-              │   VILLAGE   │◄──────┤   PROPERTY   │
-              │ ─────────── │ (M:M) │ ──────────── │
-              │ id (PK)     │───────►│ id (PK)     │
-              │ name        │ (1:M)  │ address     │
-              │ code        │        │ size        │
-              │ cell_id (FK)│        └──────────────┘
-              └──────┬──────┘
-                     │ (1:M)
-                     │
-         ┌───────────┴───────────┐
-         │                       │
-    ┌────▼────┐            ┌─────▼─────┐
-    │   USER  │           │  PROFILE   │
-    │ ─────── │◄──(1:1)──►│ ────────── │
-    │ id (PK) │            │ id (PK)    │
-    │ name    │            │ user_id(FK)│
-    │ email   │            │ bio        │
-    │ village_│            └────────────┘
-    │  id(FK) │
-    └─────────┘
-
-    Junction Table: OWNER_PROPERTY
-    ───────────────────────────────
-    property_id (FK) ──► PROPERTY
-    user_id (FK)     ──► USER
-
-Legend:
-───── Primary Key (id)
-──(FK) Foreign Key
-──(1:M) One-to-Many
-──(M:M) Many-to-Many
-──(1:1) One-to-One
-```
-
-**Key Features of This ERD:**
-- ✅ **8 Core Tables** + 1 Junction Table = **9 Total Tables**
-- ✅ **5-Level Geographic Hierarchy** (Province → District → Sector → Cell → Village)
-- ✅ **4 Relationship Types Implemented**:
-  - One-to-Many: Location hierarchy chain
-  - One-to-One: User ↔ Profile
-  - Many-to-Many: User ↔ Property
-  - Many-to-One: Each level to parent
-
-*Complete Entity Relationship Diagram showing all entities and their relationships*
-
-</div>
-
-### Database Entities Overview
-
-| Entity | Type | Purpose | Key Relationships |
-|--------|------|---------|-------------------|
-| **Province** | Geography | Top-level administrative division | → District (1:M) |
-| **District** | Geography | Second-level division | ← Province (M:1), → Sector (1:M) |
-| **Sector** | Geography | Third-level division | ← District (M:1), → Cell (1:M) |
-| **Cell** | Geography | Fourth-level division | ← Sector (M:1), → Village (1:M) |
-| **Village** | Geography | Fifth-level division | ← Cell (M:1), → User (1:M) |
-| **User** | People | Registered system users | ← Village (M:1), ↔ Profile (1:1), ↔ Property (M:M) |
-| **Profile** | People | User profile information | ↔ User (1:1) |
-| **Property** | Assets | Land properties | ↔ User (M:M), ← District (M:1) |
-| **Owner_Property** | Junction | Many-to-Many join table | Links User ↔ Property |
-
-### Relationship Summary
-
-```
-Province (1) ──┬─→ District (M) ──┬─→ Sector (M) ──┬─→ Cell (M) ──┬─→ Village (M) ──┬─→ User (M)
-               │                   │                 │              │                  │
-               │                   │                 │              │                  ├─→ Profile (1:1)
-               │                   │                 │              │                  │
-               │                   │                 │              │                  └─→ Property (M:M)
-               │                   │                 │              │
-               │                   └─────────────────┴──────────────┴─→ Property (M)
-```
-
----
-
-## ✨ Key Features
-
-### 1. 🗺️ Rwanda Administrative Hierarchy Management
-
-- Complete 5-level location structure implementation
+**Geographic Hierarchy (5 levels)**:
 - Province → District → Sector → Cell → Village
-- Cascading relationships with proper foreign key constraints
-- Efficient data retrieval at any hierarchy level
 
-### 2. 👥 User Management System
+**User Management**:
+- User (linked to Village)
+- Profile (One-to-One with User)
 
-- User registration with village-level precision
-- Automatic location hierarchy linking
+**Asset Management**:
+- Property (Many-to-Many with User)
+- owner_property (Junction table)
+
+### Relationships Implemented
+
+| Relationship Type | Implementation | Description |
+|------------------|----------------|-------------|
+| **One-to-Many** | Province → District → Sector → Cell → Village → User | Geographic hierarchy chain |
+| **One-to-One** | User ↔ Profile | Each user has one profile |
+| **Many-to-Many** | User ↔ Property | Users can own multiple properties; properties can have multiple owners |
+
+---
+
+## Technology Stack
+
+- **Framework**: Spring Boot 3.2.0
+- **Language**: Java 17
+- **Database**: PostgreSQL 12+
+- **ORM**: Hibernate (JPA)
+- **Build Tool**: Maven 3.6+
+- **Libraries**: Lombok, Jackson, Spring Data JPA
+
+---
+
+## Key Features
+
+### 1. Location Hierarchy Management
+
+The system implements Rwanda's complete administrative structure:
+
+```
+Province (e.g., Kigali City)
+  └─ District (e.g., Gasabo)
+      └─ Sector (e.g., Remera)
+          └─ Cell (e.g., Rukiri I)
+              └─ Village (e.g., Village A)
+                  └─ Users
+```
+
+**Implementation Approach**:
+- Users store only `village_id` (not the entire hierarchy)
+- Full location path accessible through JPA relationships
+- Prevents data redundancy and maintains normalization
+
+### 2. User Management
+
+- User registration with village-level location
 - Email uniqueness validation using `existsByEmail()`
-- Profile management with One-to-One relationship
+- Automatic hierarchy linking through relationships
+- Profile management (One-to-One relationship)
 
-### 3. 🏘️ Property Management
+### 3. Property Management
 
 - Land property registration
 - Multiple ownership support (Many-to-Many)
 - District-level property tracking
-- Owner-property relationship management
 
-### 4. 🔍 Advanced Query Capabilities
+### 4. Advanced Querying
 
 - Retrieve users by province code or name
 - JPQL queries with relationship traversal
-- Efficient JOIN operations
-- Custom repository methods
+- Efficient JOIN operations across hierarchy levels
 
-### 5. 📄 Pagination & Sorting
+### 5. Pagination & Sorting
 
 - Spring Data JPA Pageable implementation
-- Customizable page size and number
-- Multi-field sorting support
+- Customizable page size and sorting
 - Performance optimization for large datasets
 
-### 6. 🛡️ Data Integrity
+---
 
-- Foreign key constraints
-- Cascade operations
-- Unique constraints on codes and emails
-- Proper null handling
+## Project Structure
+
+```
+src/main/java/com/example/landregistration/
+├── controller/
+│   ├── location/          # Province, District, Sector, Cell, Village controllers
+│   └── UserController.java
+├── entity/
+│   ├── location/          # Geographic entities
+│   ├── User.java
+│   ├── Profile.java
+│   └── Property.java
+├── repository/
+│   ├── location/          # Location repositories
+│   └── UserRepository.java
+├── service/
+│   ├── location/          # Location services
+│   └── UserService.java
+└── LandRegistrationApplication.java
+```
 
 ---
 
-## 🛠️ Technology Stack
+## Installation & Setup
 
-### Backend Framework
-- **Spring Boot 3.2.0** - Modern Java framework
-- **Spring Data JPA** - Database abstraction layer
-- **Hibernate** - ORM implementation
+### Prerequisites
 
-### Database
-- **PostgreSQL 12+** - Relational database
-- **JDBC Driver** - Database connectivity
+- Java 17+
+- Maven 3.6+
+- PostgreSQL 12+
 
-### Build & Dependencies
-- **Maven 3.6+** - Dependency management
-- **Java 17** - Programming language
+### Steps
 
-### Additional Libraries
-- **Lombok** - Boilerplate code reduction
-- **Jackson** - JSON serialization
-- **Spring Web** - REST API support
+1. **Clone the repository**
+```bash
+git clone https://github.com/manzifred/midterm_26634_groupE.git
+cd midterm_26634_groupE
+```
+
+2. **Create database**
+```sql
+CREATE DATABASE land_registration_db;
+```
+
+3. **Configure database** (edit `src/main/resources/application.properties`)
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/land_registration_db
+spring.datasource.username=postgres
+spring.datasource.password=your_password
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+```
+
+4. **Build and run**
+```bash
+mvn clean install
+mvn spring-boot:run
+```
+
+Application runs on: **http://localhost:8080**
 
 ---
 
-## 🏗️ Database Architecture
+## API Endpoints
 
-### Design Principles
+### Location Management
+
+Create the hierarchy from top to bottom:
+
+```http
+# 1. Create Province
+POST /api/location/provinces?name=Kigali&code=KGL
+
+# 2. Create District
+POST /api/location/districts?name=Gasabo&code=GS&provinceId=1
+
+# 3. Create Sector
+POST /api/location/sectors?name=Remera&code=RM&districtId=1
+
+# 4. Create Cell
+POST /api/location/cells?name=Rukiri I&code=RK&sectorId=1
+
+# 5. Create Village
+POST /api/location/villages?name=Village A&code=VA&cellId=1
+```
+
+### User Management
+
+```http
+# Create User (only villageId required)
+POST /api/users
+Content-Type: application/json
+
+{
+  "name": "Fred Manzi",
+  "email": "fred@example.com",
+  "villageId": 1
+}
+
+# Get All Users (with pagination)
+GET /api/users?page=0&size=10&sort=name,asc
+
+# Get Users by Province Code
+GET /api/users/province/code/KGL
+
+# Get Users by Province Name
+GET /api/users/province/name/Kigali
+
+# Check Email Existence
+GET /api/users/exists/fred@example.com
+```
+
+---
+
+## Implementation Details
+
+### 1. Location Saving
+
+Users are saved with **only village_id**. The complete hierarchy is accessible through relationships:
+
+```java
+// UserService.java
+public User saveUser(String name, String email, Long villageId) {
+    Village village = villageRepository.findById(villageId)
+            .orElseThrow(() -> new RuntimeException("Village not found"));
+    
+    User user = new User(name, email, village);
+    return userRepository.save(user);
+}
+```
+
+**Benefits**:
+- Eliminates data redundancy
+- Maintains database normalization (3NF)
+- Full hierarchy accessible via: `user.getVillage().getCell().getSector().getDistrict().getProvince()`
+
+### 2. Pagination & Sorting
+
+Implemented using Spring Data JPA's `Pageable`:
+
+```java
+// UserController.java
+@GetMapping
+public Page<User> getAllUsers(@PageableDefault(size = 10) Pageable pageable) {
+    return userService.getAllUsers(pageable);
+}
+```
+
+**How it works**:
+- Generates SQL with LIMIT and OFFSET clauses
+- Loads only requested subset of data
+- Improves performance for large datasets
+
+### 3. Many-to-Many Relationship
+
+User ↔ Property relationship using join table:
+
+```java
+// Property.java
+@ManyToMany
+@JoinTable(
+    name = "owner_property",
+    joinColumns = @JoinColumn(name = "property_id"),
+    inverseJoinColumns = @JoinColumn(name = "user_id")
+)
+private List<User> owners;
+```
+
+**Join Table Structure**:
+- `owner_property` contains `property_id` and `user_id`
+- Allows multiple owners per property
+- Allows multiple properties per user
+
+### 4. One-to-Many Relationships
+
+Location hierarchy chain:
+
+```java
+// District.java
+@ManyToOne(fetch = FetchType.EAGER)
+@JoinColumn(name = "province_id", nullable = false)
+private Province province;
+
+// Province.java
+@OneToMany(mappedBy = "province", cascade = CascadeType.ALL)
+private List<District> districts;
+```
+
+**Foreign Keys**: Each level stores parent's ID (province_id, district_id, sector_id, cell_id)
+
+### 5. One-to-One Relationship
+
+User ↔ Profile:
+
+```java
+// Profile.java
+@OneToOne(fetch = FetchType.LAZY)
+@JoinColumn(name = "user_id", nullable = false)
+private User user;
+
+// User.java
+@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+private Profile profile;
+```
+
+### 6. existBy() Method
+
+Email uniqueness check:
+
+```java
+// UserRepository.java
+boolean existsByEmail(String email);
+
+// Usage in UserController.java
+if (userService.existsByEmail(email)) {
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body("Email already exists");
+}
+```
+
+**How it works**: Spring Data JPA generates a COUNT query without loading the entity.
+
+### 7. Province Retrieval
+
+JPQL query traversing relationships:
+
+```java
+// UserRepository.java
+@Query("SELECT u FROM User u WHERE u.village.cell.sector.district.province.code = :code")
+Page<User> findUsersByProvinceCode(@Param("code") String code, Pageable pageable);
+
+@Query("SELECT u FROM User u WHERE u.village.cell.sector.district.province.name = :name")
+Page<User> findUsersByProvinceName(@Param("name") String name, Pageable pageable);
+```
+
+**Generated SQL**: Hibernate creates INNER JOINs across all five location tables.
+
+---
+
+## Database Design Principles
 
 1. **Normalization**: All tables follow Third Normal Form (3NF)
 2. **Referential Integrity**: Foreign keys enforce relationships
@@ -248,453 +348,53 @@ Province (1) ──┬─→ District (M) ──┬─→ Sector (M) ──┬�
 4. **Scalability**: Indexed foreign keys for fast queries
 5. **Maintainability**: Clear naming conventions and structure
 
-### Key Design Decisions
-
-#### ✅ Why Users Store Only Village ID
-
-**Problem**: Should users store province_id, district_id, sector_id, cell_id, AND village_id?
-
-**Solution**: Store ONLY village_id!
-
-**Benefits**:
-- ✅ Eliminates data redundancy
-- ✅ Prevents data inconsistency
-- ✅ Follows normalization principles
-- ✅ Easier to maintain
-- ✅ Full hierarchy accessible via relationships
-
-**Example**:
-```java
-// User only stores village_id
-User user = userRepository.findById(1);
-
-// But can access entire hierarchy
-Province province = user.getVillage().getCell().getSector().getDistrict().getProvince();
-// Or using convenience methods
-Province province = user.getProvince();
-```
-
 ---
 
-## 📁 Project Structure
+## Testing
 
-```
-land-registration-system/
-├── src/
-│   ├── main/
-│   │   ├── java/com/example/landregistration/
-│   │   │   ├── controller/
-│   │   │   │   ├── location/
-│   │   │   │   │   ├── ProvinceController.java
-│   │   │   │   │   ├── DistrictController.java
-│   │   │   │   │   ├── SectorController.java
-│   │   │   │   │   ├── CellController.java
-│   │   │   │   │   └── VillageController.java
-│   │   │   │   └── UserController.java
-│   │   │   ├── entity/
-│   │   │   │   ├── location/
-│   │   │   │   │   ├── Province.java
-│   │   │   │   │   ├── District.java
-│   │   │   │   │   ├── Sector.java
-│   │   │   │   │   ├── Cell.java
-│   │   │   │   │   └── Village.java
-│   │   │   │   ├── User.java
-│   │   │   │   ├── Profile.java
-│   │   │   │   └── Property.java
-│   │   │   ├── repository/
-│   │   │   │   ├── location/
-│   │   │   │   │   ├── ProvinceRepository.java
-│   │   │   │   │   ├── DistrictRepository.java
-│   │   │   │   │   ├── SectorRepository.java
-│   │   │   │   │   ├── CellRepository.java
-│   │   │   │   │   └── VillageRepository.java
-│   │   │   │   ├── UserRepository.java
-│   │   │   │   └── PropertyRepository.java
-│   │   │   ├── service/
-│   │   │   │   ├── location/
-│   │   │   │   │   ├── ProvinceService.java
-│   │   │   │   │   ├── DistrictService.java
-│   │   │   │   │   ├── SectorService.java
-│   │   │   │   │   ├── CellService.java
-│   │   │   │   │   └── VillageService.java
-│   │   │   │   └── UserService.java
-│   │   │   └── LandRegistrationApplication.java
-│   │   └── resources/
-│   │       └── application.properties
-├── docs/
-│   └── erd-diagram.png
-├── pom.xml
-├── README.md
-├── IMPLEMENTATION_GUIDE.md
-├── SUBMISSION_CHECKLIST.md
-├── VIVA_VOCE_GUIDE.md
-└── PROJECT_VERIFICATION_REPORT.md
-```
-
----
-
-## 🚀 Installation & Setup
-
-### Prerequisites
-
-Ensure you have the following installed:
-
-- ☑️ **Java 17** or higher ([Download](https://www.oracle.com/java/technologies/downloads/))
-- ☑️ **Maven 3.6+** ([Download](https://maven.apache.org/download.cgi))
-- ☑️ **PostgreSQL 12+** ([Download](https://www.postgresql.org/download/))
-- ☑️ **Git** ([Download](https://git-scm.com/downloads))
-
-### Step 1: Clone the Repository
+### Example Test Flow
 
 ```bash
-git clone https://github.com/manzifred/midterm_26634_groupE.git
-cd midterm_26634_groupE
-```
-
-### Step 2: Create Database
-
-Open PostgreSQL and create the database:
-
-```sql
-CREATE DATABASE land_registration_db;
-```
-
-### Step 3: Configure Database Connection
-
-Edit `src/main/resources/application.properties`:
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/land_registration_db
-spring.datasource.username=postgres
-spring.datasource.password=your_password_here
-
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-```
-
-### Step 4: Build the Project
-
-```bash
-mvn clean install
-```
-
-### Step 5: Run the Application
-
-```bash
-mvn spring-boot:run
-```
-
-The application will start on **http://localhost:8080**
-
-### Step 6: Verify Installation
-
-Check if the application is running:
-
-```bash
-curl http://localhost:8080/api/users
-```
-
----
-
-## 📡 API Documentation
-
-### Base URL
-```
-http://localhost:8080
-```
-
-### 🗺️ Location Management Endpoints
-
-#### 1. Province Management
-
-**Create Province**
-```http
-POST /api/location/provinces?name=Kigali&code=KGL
-```
-
-**Get All Provinces**
-```http
-GET /api/location/provinces?page=0&size=10
-```
-
-**Get Province by ID**
-```http
-GET /api/location/provinces/{id}
-```
-
-#### 2. District Management
-
-**Create District**
-```http
-POST /api/location/districts?name=Nyarugenge&code=NYR&provinceId=1
-```
-
-**Get Districts by Province**
-```http
-GET /api/location/districts/province/{provinceId}
-```
-
-#### 3. Sector Management
-
-**Create Sector**
-```http
-POST /api/location/sectors?name=Rugenge&code=RGN&districtId=1
-```
-
-**Get Sectors by District**
-```http
-GET /api/location/sectors/district/{districtId}
-```
-
-#### 4. Cell Management
-
-**Create Cell**
-```http
-POST /api/location/cells?name=Muhima&code=MHM&sectorId=1
-```
-
-**Get Cells by Sector**
-```http
-GET /api/location/cells/sector/{sectorId}
-```
-
-#### 5. Village Management
-
-**Create Village**
-```http
-POST /api/location/villages?name=Muhima Village&code=MHMV&cellId=1
-```
-
-**Get Villages by Cell**
-```http
-GET /api/location/villages/cell/{cellId}
-```
-
-### 👥 User Management Endpoints
-
-#### 1. Create User
-
-**Important**: Users are created with ONLY `villageId` (not province!)
-
-```http
-POST /api/users
-Content-Type: application/json
-
-{
-  "name": "Fred Manzi",
-  "email": "fred.manzi@example.com",
-  "villageId": 1
-}
-```
-
-**Response**:
-```json
-{
-  "id": 1,
-  "name": "Fred Manzi",
-  "email": "fred.manzi@example.com",
-  "village": {
-    "id": 1,
-    "name": "Muhima Village",
-    "code": "MHMV",
-    "cell": {
-      "id": 1,
-      "name": "Muhima",
-      "code": "MHM",
-      "sector": {
-        "id": 1,
-        "name": "Rugenge",
-        "code": "RGN",
-        "district": {
-          "id": 1,
-          "name": "Nyarugenge",
-          "code": "NYR",
-          "province": {
-            "id": 1,
-            "name": "Kigali",
-            "code": "KGL"
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-#### 2. Get All Users (with Pagination & Sorting)
-
-```http
-GET /api/users?page=0&size=10&sort=name,asc
-```
-
-**Query Parameters**:
-- `page`: Page number (default: 0)
-- `size`: Items per page (default: 10)
-- `sort`: Sort field and direction (e.g., `name,asc` or `email,desc`)
-
-**Response**:
-```json
-{
-  "content": [
-    {
-      "id": 1,
-      "name": "Fred Manzi",
-      "email": "fred.manzi@example.com",
-      "village": {...}
-    }
-  ],
-  "pageable": {
-    "pageNumber": 0,
-    "pageSize": 10
-  },
-  "totalElements": 5,
-  "totalPages": 1
-}
-```
-
-#### 3. Get Users by Province Code
-
-```http
-GET /api/users/province/code/KGL?page=0&size=10
-```
-
-#### 4. Get Users by Province Name
-
-```http
-GET /api/users/province/name/Kigali?page=0&size=10
-```
-
-#### 5. Check Email Existence
-
-```http
-GET /api/users/exists/fred.manzi@example.com
-```
-
-**Response**: `true` or `false`
-
----
-
-## 🧪 Testing Guide
-
-### Manual Testing with Postman/cURL
-
-#### Test Scenario 1: Create Complete Location Hierarchy
-
-```bash
-# 1. Create Province
+# 1. Create location hierarchy
 curl -X POST "http://localhost:8080/api/location/provinces?name=Kigali&code=KGL"
+curl -X POST "http://localhost:8080/api/location/districts?name=Gasabo&code=GS&provinceId=1"
+curl -X POST "http://localhost:8080/api/location/sectors?name=Remera&code=RM&districtId=1"
+curl -X POST "http://localhost:8080/api/location/cells?name=Rukiri I&code=RK&sectorId=1"
+curl -X POST "http://localhost:8080/api/location/villages?name=Village A&code=VA&cellId=1"
 
-# 2. Create District (use province ID from step 1)
-curl -X POST "http://localhost:8080/api/location/districts?name=Nyarugenge&code=NYR&provinceId=1"
-
-# 3. Create Sector (use district ID from step 2)
-curl -X POST "http://localhost:8080/api/location/sectors?name=Rugenge&code=RGN&districtId=1"
-
-# 4. Create Cell (use sector ID from step 3)
-curl -X POST "http://localhost:8080/api/location/cells?name=Muhima&code=MHM&sectorId=1"
-
-# 5. Create Village (use cell ID from step 4)
-curl -X POST "http://localhost:8080/api/location/villages?name=Muhima%20Village&code=MHMV&cellId=1"
-```
-
-#### Test Scenario 2: Create User with Village
-
-```bash
+# 2. Create user
 curl -X POST http://localhost:8080/api/users \
   -H "Content-Type: application/json" \
-  -d '{
-    "name": "Fred Manzi",
-    "email": "fred.manzi@example.com",
-    "villageId": 1
-  }'
-```
+  -d '{"name":"Fred Manzi","email":"fred@example.com","villageId":1}'
 
-#### Test Scenario 3: Test Pagination
-
-```bash
-# Get first page (10 users)
-curl "http://localhost:8080/api/users?page=0&size=10"
-
-# Get second page
-curl "http://localhost:8080/api/users?page=1&size=10"
-
-# Get with sorting
-curl "http://localhost:8080/api/users?page=0&size=10&sort=name,asc"
-```
-
-#### Test Scenario 4: Test Province Queries
-
-```bash
-# By province code
+# 3. Query users by province
 curl "http://localhost:8080/api/users/province/code/KGL"
 
-# By province name
-curl "http://localhost:8080/api/users/province/name/Kigali"
-```
+# 4. Test pagination
+curl "http://localhost:8080/api/users?page=0&size=10&sort=name,asc"
 
-#### Test Scenario 5: Test Email Existence
-
-```bash
-# Check if email exists
-curl "http://localhost:8080/api/users/exists/fred.manzi@example.com"
-# Returns: true
-
-# Check non-existent email
-curl "http://localhost:8080/api/users/exists/nonexistent@example.com"
-# Returns: false
+# 5. Check email existence
+curl "http://localhost:8080/api/users/exists/fred@example.com"
 ```
 
 ---
 
-## 🎓 Viva-Voce Preparation
+## Project Status
 
-### Question 1: Explain your ERD and relationships
-
-**Answer**: 
-"Our system has 10 entities organized into three categories: Geography (Province, District, Sector, Cell, Village), People (User, Profile), and Assets (Property). The location entities form a 5-level hierarchy using One-to-Many relationships. Users have a One-to-One relationship with Profile and a Many-to-Many relationship with Property through the owner_property join table."
-
-### Question 2: How do you save location data?
-
-**Answer**: 
-"When creating a user, we only require the villageId. The system validates that the village exists, then creates the user with just that foreign key. The complete location hierarchy (Province → District → Sector → Cell → Village) is accessible through JPA relationship traversal. This follows database normalization principles and prevents data redundancy."
-
-### Question 3: Explain pagination and sorting
-
-**Answer**: 
-"We use Spring Data JPA's Pageable interface which accepts page number, size, and sort parameters. Internally, it generates SQL with LIMIT and OFFSET clauses for pagination and ORDER BY for sorting. This improves performance by loading only the requested subset of data instead of all records, which is crucial for large datasets."
-
-### Question 4: Explain the Many-to-Many relationship
-
-**Answer**: 
-"The Many-to-Many relationship between User and Property uses a join table called 'owner_property'. This table contains two foreign keys: property_id and user_id. The @JoinTable annotation on the Property entity defines this mapping, while the User entity uses @ManyToMany with mappedBy='owners' to indicate Property is the owning side."
-
-### Question 5: Explain One-to-Many relationships
-
-**Answer**: 
-"Our location hierarchy demonstrates One-to-Many relationships. For example, one Province has many Districts. The District entity has @ManyToOne with @JoinColumn(name='province_id') pointing to Province, while Province has @OneToMany(mappedBy='province') pointing back to Districts. The foreign key 'province_id' is stored in the district table."
-
-### Question 6: Explain the One-to-One relationship
-
-**Answer**: 
-"User and Profile have a One-to-One relationship. The Profile entity owns the relationship with @OneToOne and @JoinColumn(name='user_id'), storing the foreign key. The User entity has @OneToOne(mappedBy='user') to complete the bidirectional mapping. This allows each user to have exactly one profile."
-
-### Question 7: How does existsByEmail() work?
-
-**Answer**: 
-"existsByEmail() is a derived query method in Spring Data JPA. Spring automatically generates the implementation based on the method name. It executes a COUNT query to check if any user with that email exists, returning a boolean. This is more efficient than fetching the entity and checking if it's present."
-
-### Question 8: Explain the province retrieval queries
-
-**Answer**: 
-"We use JPQL to traverse relationships: 'SELECT u FROM User u WHERE u.village.cell.sector.district.province.code = :code'. This tells Hibernate to follow the foreign key chain from User to Province. Hibernate generates SQL with INNER JOINs across all five location tables, allowing us to filter users by province without storing redundant province data in the user table."
+✅ **Compilation**: BUILD SUCCESS (zero errors)  
+✅ **Database**: PostgreSQL with proper schema  
+✅ **API**: All endpoints functional  
+✅ **Relationships**: All 4 types implemented  
+✅ **Pagination**: Fully working  
+✅ **Queries**: Province retrieval by code and name  
 
 ---
 
-<div align="center">
+## Author
 
-**Built with ❤️ using Spring Boot**
+**Fred Manzi**  
+Student ID: 26634 | Group E
 
-**© 2026 Fred Manzi - All Rights Reserved**
+---
 
-</div>
+**Built with Spring Boot 3.2.0 | Java 17 | PostgreSQL**
