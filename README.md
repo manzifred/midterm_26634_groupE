@@ -27,7 +27,6 @@
 - [Project Structure](#-project-structure)
 - [Installation & Setup](#-installation--setup)
 - [API Documentation](#-api-documentation)
-- [Rubric Compliance](#-rubric-compliance-3030)
 - [Testing Guide](#-testing-guide)
 - [Viva-Voce Preparation](#-viva-voce-preparation)
 - [Author](#-author)
@@ -53,7 +52,91 @@ This project is a comprehensive **Land Registration and Management System** buil
 
 <div align="center">
 
-![ERD Diagram](https://raw.githubusercontent.com/manzifred/midterm_26634_groupE/main/docs/erd-diagram.png)
+### Land Registration & Management System - Complete ERD
+
+```
+              ┌─────────────┐
+              │  PROVINCE   │
+              │ ─────────── │
+              │ id (PK)     │
+              │ name        │
+              │ code        │
+              └──────┬──────┘
+                     │ (1:M)
+                     │
+              ┌──────▼──────┐
+              │  DISTRICT   │
+              │ ─────────── │
+              │ id (PK)     │
+              │ name        │
+              │ code        │
+              │ province_id (FK)
+              └──────┬──────┘
+                     │ (1:M)
+                     │
+              ┌──────▼──────┐
+              │   SECTOR    │
+              │ ─────────── │
+              │ id (PK)     │
+              │ name        │
+              │ code        │
+              │ district_id (FK)
+              └──────┬──────┘
+                     │ (1:M)
+                     │
+              ┌──────▼──────┐
+              │   CELL      │
+              │ ─────────── │
+              │ id (PK)     │
+              │ name        │
+              │ code        │
+              │ sector_id (FK)
+              └──────┬──────┘
+                     │ (1:M)
+                     │
+              ┌──────▼──────┐       ┌──────────────┐
+              │   VILLAGE   │◄──────┤   PROPERTY   │
+              │ ─────────── │ (M:M) │ ──────────── │
+              │ id (PK)     │───────►│ id (PK)     │
+              │ name        │ (1:M)  │ address     │
+              │ code        │        │ size        │
+              │ cell_id (FK)│        └──────────────┘
+              └──────┬──────┘
+                     │ (1:M)
+                     │
+         ┌───────────┴───────────┐
+         │                       │
+    ┌────▼────┐            ┌─────▼─────┐
+    │   USER  │           │  PROFILE   │
+    │ ─────── │◄──(1:1)──►│ ────────── │
+    │ id (PK) │            │ id (PK)    │
+    │ name    │            │ user_id(FK)│
+    │ email   │            │ bio        │
+    │ village_│            └────────────┘
+    │  id(FK) │
+    └─────────┘
+
+    Junction Table: OWNER_PROPERTY
+    ───────────────────────────────
+    property_id (FK) ──► PROPERTY
+    user_id (FK)     ──► USER
+
+Legend:
+───── Primary Key (id)
+──(FK) Foreign Key
+──(1:M) One-to-Many
+──(M:M) Many-to-Many
+──(1:1) One-to-One
+```
+
+**Key Features of This ERD:**
+- ✅ **8 Core Tables** + 1 Junction Table = **9 Total Tables**
+- ✅ **5-Level Geographic Hierarchy** (Province → District → Sector → Cell → Village)
+- ✅ **4 Relationship Types Implemented**:
+  - One-to-Many: Location hierarchy chain
+  - One-to-One: User ↔ Profile
+  - Many-to-Many: User ↔ Property
+  - Many-to-One: Each level to parent
 
 *Complete Entity Relationship Diagram showing all entities and their relationships*
 
@@ -489,25 +572,6 @@ GET /api/users/exists/fred.manzi@example.com
 ```
 
 **Response**: `true` or `false`
-
----
-
-## ✅ Rubric Compliance (30/30)
-
-### Detailed Requirements Breakdown
-
-| # | Requirement | Marks | Status | Implementation |
-|---|------------|-------|--------|----------------|
-| 1 | **ERD with 5+ tables** | 3 | ✅ | 10 entities (Province, District, Sector, Cell, Village, User, Profile, Property, Owner_Property) |
-| 2 | **Location Saving** | 2 | ✅ | Users saved with `villageId` only; hierarchy accessible via relationships |
-| 3 | **Pagination & Sorting** | 5 | ✅ | Spring Data `Pageable` on all GET endpoints; customizable page size and sorting |
-| 4 | **Many-to-Many** | 3 | ✅ | User ↔ Property via `owner_property` join table with `@JoinTable` |
-| 5 | **One-to-Many** | 2 | ✅ | Province → District → Sector → Cell → Village → User chain |
-| 6 | **One-to-One** | 2 | ✅ | User ↔ Profile with bidirectional mapping |
-| 7 | **existBy() Method** | 2 | ✅ | `UserRepository.existsByEmail()` for duplicate checking |
-| 8 | **Province Retrieval** | 4 | ✅ | JPQL queries for both code and name with relationship traversal |
-| 9 | **Viva-Voce** | 7 | ✅ | Complete documentation and understanding of all concepts |
-| | **TOTAL** | **30** | **✅** | **All Requirements Met** |
 
 ---
 
