@@ -49,85 +49,13 @@ This project is a comprehensive **Land Registration and Management System** buil
 ---
 
 ## 📊 Entity Relationship Diagram
+<img width="2800" height="2200" alt="erd-diagram" src="https://github.com/user-attachments/assets/5a0be4ee-f54c-40eb-a758-9d7c8fb205ef" />
+
 
 <div align="center">
 
 ### Land Registration & Management System - Complete ERD
 
-```
-              ┌─────────────┐
-              │  PROVINCE   │
-              │ ─────────── │
-              │ id (PK)     │
-              │ name        │
-              │ code        │
-              └──────┬──────┘
-                     │ (1:M)
-                     │
-              ┌──────▼──────┐
-              │  DISTRICT   │
-              │ ─────────── │
-              │ id (PK)     │
-              │ name        │
-              │ code        │
-              │ province_id (FK)
-              └──────┬──────┘
-                     │ (1:M)
-                     │
-              ┌──────▼──────┐
-              │   SECTOR    │
-              │ ─────────── │
-              │ id (PK)     │
-              │ name        │
-              │ code        │
-              │ district_id (FK)
-              └──────┬──────┘
-                     │ (1:M)
-                     │
-              ┌──────▼──────┐
-              │   CELL      │
-              │ ─────────── │
-              │ id (PK)     │
-              │ name        │
-              │ code        │
-              │ sector_id (FK)
-              └──────┬──────┘
-                     │ (1:M)
-                     │
-              ┌──────▼──────┐       ┌──────────────┐
-              │   VILLAGE   │◄──────┤   PROPERTY   │
-              │ ─────────── │ (M:M) │ ──────────── │
-              │ id (PK)     │───────►│ id (PK)     │
-              │ name        │ (1:M)  │ address     │
-              │ code        │        │ size        │
-              │ cell_id (FK)│        └──────────────┘
-              └──────┬──────┘
-                     │ (1:M)
-                     │
-         ┌───────────┴───────────┐
-         │                       │
-    ┌────▼────┐            ┌─────▼─────┐
-    │   USER  │           │  PROFILE   │
-    │ ─────── │◄──(1:1)──►│ ────────── │
-    │ id (PK) │            │ id (PK)    │
-    │ name    │            │ user_id(FK)│
-    │ email   │            │ bio        │
-    │ village_│            └────────────┘
-    │  id(FK) │
-    └─────────┘
-
-    Junction Table: OWNER_PROPERTY
-    ───────────────────────────────
-    property_id (FK) ──► PROPERTY
-    user_id (FK)     ──► USER
-
-Legend:
-───── Primary Key (id)
-──(FK) Foreign Key
-──(1:M) One-to-Many
-──(M:M) Many-to-Many
-──(1:1) One-to-One
-```
 
 **Key Features of This ERD:**
 - ✅ **8 Core Tables** + 1 Junction Table = **9 Total Tables**
