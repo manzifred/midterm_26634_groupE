@@ -9,44 +9,10 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12%2B-blue.svg)](https://www.postgresql.org/)
 [![License](https://img.shields.io/badge/License-Academic-yellow.svg)](LICENSE)
 
-**Midterm Project - Group E**  
-**Student ID**: 26634  
-**Repository**: [github.com/manzifred/midterm_26634_groupE](https://github.com/manzifred/midterm_26634_groupE)
-
----
-
-</div>
-
-## 📋 Table of Contents
-
-- [Overview](#-overview)
-- [Entity Relationship Diagram](#-entity-relationship-diagram)
-- [Key Features](#-key-features)
-- [Technology Stack](#-technology-stack)
-- [Database Architecture](#-database-architecture)
-- [Project Structure](#-project-structure)
-- [Installation & Setup](#-installation--setup)
-- [API Documentation](#-api-documentation)
-- [Testing Guide](#-testing-guide)
-- [Viva-Voce Preparation](#-viva-voce-preparation)
-- [Author](#-author)
-
----
-
 ## 🎯 Overview
 
 This project is a comprehensive **Land Registration and Management System** built with Spring Boot, demonstrating advanced database design principles and RESTful API development. The system manages Rwanda's five-level administrative hierarchy (Province → District → Sector → Cell → Village) and implements user registration with proper location tracking.
 
-### 🌟 What Makes This Project Special
-
-- **10 Database Entities** with complex relationships (exceeds 5-table requirement)
-- **4 Relationship Types**: One-to-One, One-to-Many, Many-to-One, Many-to-Many
-- **Zero Compilation Errors**: Production-ready code
-- **RESTful API Design**: Following industry best practices
-- **Proper Data Normalization**: Third Normal Form (3NF) compliance
-- **Performance Optimized**: Pagination, sorting, and efficient queries
-
----
 
 ## 📊 Entity Relationship Diagram
 <img width="2800" height="2200" alt="erd-diagram" src="https://github.com/user-attachments/assets/5a0be4ee-f54c-40eb-a758-9d7c8fb205ef" />
@@ -575,53 +541,9 @@ curl "http://localhost:8080/api/users/exists/nonexistent@example.com"
 
 ---
 
-## 🎓 Viva-Voce Preparation
-
-### Question 1: Explain your ERD and relationships
-
-**Answer**: 
-"Our system has 10 entities organized into three categories: Geography (Province, District, Sector, Cell, Village), People (User, Profile), and Assets (Property). The location entities form a 5-level hierarchy using One-to-Many relationships. Users have a One-to-One relationship with Profile and a Many-to-Many relationship with Property through the owner_property join table."
-
-### Question 2: How do you save location data?
-
-**Answer**: 
-"When creating a user, we only require the villageId. The system validates that the village exists, then creates the user with just that foreign key. The complete location hierarchy (Province → District → Sector → Cell → Village) is accessible through JPA relationship traversal. This follows database normalization principles and prevents data redundancy."
-
-### Question 3: Explain pagination and sorting
-
-**Answer**: 
-"We use Spring Data JPA's Pageable interface which accepts page number, size, and sort parameters. Internally, it generates SQL with LIMIT and OFFSET clauses for pagination and ORDER BY for sorting. This improves performance by loading only the requested subset of data instead of all records, which is crucial for large datasets."
-
-### Question 4: Explain the Many-to-Many relationship
-
-**Answer**: 
-"The Many-to-Many relationship between User and Property uses a join table called 'owner_property'. This table contains two foreign keys: property_id and user_id. The @JoinTable annotation on the Property entity defines this mapping, while the User entity uses @ManyToMany with mappedBy='owners' to indicate Property is the owning side."
-
-### Question 5: Explain One-to-Many relationships
-
-**Answer**: 
-"Our location hierarchy demonstrates One-to-Many relationships. For example, one Province has many Districts. The District entity has @ManyToOne with @JoinColumn(name='province_id') pointing to Province, while Province has @OneToMany(mappedBy='province') pointing back to Districts. The foreign key 'province_id' is stored in the district table."
-
-### Question 6: Explain the One-to-One relationship
-
-**Answer**: 
-"User and Profile have a One-to-One relationship. The Profile entity owns the relationship with @OneToOne and @JoinColumn(name='user_id'), storing the foreign key. The User entity has @OneToOne(mappedBy='user') to complete the bidirectional mapping. This allows each user to have exactly one profile."
-
-### Question 7: How does existsByEmail() work?
-
-**Answer**: 
-"existsByEmail() is a derived query method in Spring Data JPA. Spring automatically generates the implementation based on the method name. It executes a COUNT query to check if any user with that email exists, returning a boolean. This is more efficient than fetching the entity and checking if it's present."
-
-### Question 8: Explain the province retrieval queries
-
-**Answer**: 
-"We use JPQL to traverse relationships: 'SELECT u FROM User u WHERE u.village.cell.sector.district.province.code = :code'. This tells Hibernate to follow the foreign key chain from User to Province. Hibernate generates SQL with INNER JOINs across all five location tables, allowing us to filter users by province without storing redundant province data in the user table."
-
----
-
 <div align="center">
 
-**Built with ❤️ using Spring Boot**
+**Built using Spring Boot**
 
 **© 2026 Fred Manzi - All Rights Reserved**
 
